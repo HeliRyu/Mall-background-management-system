@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--//图库管理-->
+<mapper namespace="com.bypx.dao.ImagesDao">
+    <!--// 上传的图片保存在本地磁盘，路径存入数据库中，然后以数据列表的形式显示出来-->
+    <!--//添加查询条件,添加分页-->
+    <select id="query" parameterType="ImagesPage" resultMap="imagesResultMap">
+        select * from ( select t.*,rownum as rn from (
+        select id_,image_name_,image_link_,add_time_ from mall_images
+        order by id_
+        )t)t2
+        where t2.rn between #{start_index} and #{end_index}
+    </select>
+    <resultMap id="imagesResultMap" type="ImagesPage">
+        <id column="id_" property="id"></id>
+        <result column="image_name_" property="imageName"></result>
+        <result column="image_link_" property="imageLink"></result>
+        <result column="add_time_" property="addTime"></result>
+    </resultMap>
+    <!--//查询总记录数-->
+    <select id="total" parameterType="ImagesPage" resultType="Integer">
+        select count(*) from mall_images
+    </select>
+    <!--//上传新增图片-->
+    <!--// 点击上传图片按钮 弹出操作框，选择要上传的图片然后可以预览，-->
+    <!--// 点击保存的时候把图片保存到项目自己制定的目录下，同时把相应的信息保存到数据库-->
+    <!--//新增到图库表-->
+    <insert id="images_upload" parameterType="ImagesPage">
+        insert into mall_images(id_,image_name_,image_link_,add_time_)
+        values(#{id},#{imageName},#{imageLink},to_date(#{addTime},'yyyy-MM-dd hh24:mi:ss'))
+    </insert>
+    <!--// 点击删除按钮，验证是否删除，确定删除该条数据-->
+    <delete id="images_del" parameterType="String">
+        delete from mall_images where id_=#{id}
+    </delete>
+</mapper>

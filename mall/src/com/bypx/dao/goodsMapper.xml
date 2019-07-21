@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--//商品管理-->
+<mapper namespace="com.bypx.dao.GoodsDao">
+    <!--// 数据列表的形式显示出来-->
+    <!--//添加查询条件,添加分页-->
+    <select id="query" parameterType="GoodsPage" resultMap="goodsResultMap">
+        select * from ( select t.*,rownum as rn from (
+        select id_,goods_cate_,name_,cover_,img_src_,goods_desc_,total_,price_,freight_,status_,sort_ from mall_goods
+        order by id_
+        )t)t2
+        where t2.rn between #{start_index} and #{end_index}
+    </select>
+    <resultMap id="goodsResultMap" type="GoodsPage">
+        <id column="id_" property="id"></id>
+        <result column="goods_cate_" property="goodsCate"></result>
+        <result column="name_" property="name"></result>
+        <result column="cover_" property="cover"></result>
+        <result column="img_src_" property="imgSrc"></result>
+        <result column="goods_desc_" property="goodsDesc"></result>
+        <result column="total_" property="total"></result>
+        <result column="price_" property="price"></result>
+        <result column="freight_" property="freight"></result>
+        <result column="status_" property="status"></result>
+        <result column="sort_" property="sort"></result>
+    </resultMap>
+    <!--//查询总记录数-->
+    <select id="total" parameterType="GoodsPage" resultType="Integer">
+        select count(*) from mall_goods
+    </select>
+    <!--//改变上下架转换开关，更新数据库信息-->
+    <update id="switch_change" parameterType="GoodsPage">
+        update mall_goods set status_=#{status} where id_=#{id}
+    </update>
+    <!--//新增-->
+    <!--//点击新增，填入商品信息，图片的上传从图库中选择，-->
+    <insert id="add" parameterType="GoodsPage">
+        insert into mall_goods (id_,goods_cate_,name_,cover_,img_src_,goods_desc_,total_,price_,freight_,status_,sort_)
+        values(cc.nextval,#{goodsCate},#{name},#{cover},#{imgSrc},#{goodsDesc},#{total},#{price},#{freight},#{status},#{sort})
+    </insert>
+    <!--//为了编辑获取数据-->
+    <!--//获取商品表数据-->
+    <select id="getdata1" parameterType="GoodsPage" resultMap="goodsEditResultMap1">
+        select id_,goods_cate_,name_,cover_,img_src_,goods_desc_,total_,price_,freight_,status_,sort_ from mall_goods where id_=#{id}
+    </select>
+    <resultMap id="goodsEditResultMap1" type="GoodsPage">
+        <id column="id_" property="id"></id>
+        <result column="goods_cate_" property="goodsCate"></result>
+        <result column="name_" property="name"></result>
+        <result column="cover_" property="cover"></result>
+        <result column="img_src_" property="imgSrc"></result>
+        <result column="goods_desc_" property="goodsDesc"></result>
+        <result column="total_" property="total"></result>
+        <result column="price_" property="price"></result>
+        <result column="freight_" property="freight"></result>
+        <result column="status_" property="status"></result>
+        <result column="sort_" property="sort"></result>
+    </resultMap>
+    <!--//编辑-->
+    <!--//在商品表更新商品-->
+    <update id="edit" parameterType="GoodsPage">
+        update mall_goods set goods_cate_=#{goodsCate},name_=#{name},cover_=#{cover},img_src_=#{imgSrc},
+        goods_desc_=#{goodsDesc},total_=#{total},price_=#{price},freight_=#{freight},status_=#{status},sort_=#{sort} where id_=#{id}
+    </update>
+    <!--//删除勾选的数据-->
+    <delete id="goods_del" parameterType="String">
+        delete from mall_goods where id_=#{id}
+    </delete>
+</mapper>

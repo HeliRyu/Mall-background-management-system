@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--// 对用户的增删改查功能-->
+<!--// 列表头像要显示出来-->
+<mapper namespace="com.bypx.dao.UserDao">
+    <!--//创建表格查询，查询条件：会员ID及昵称，查出对应的数据，注意控制好分页-->
+    <!--//添加查询条件,添加分页-->
+    <select id="query" parameterType="UserPage" resultMap="userResultMap">
+        select * from ( select t.*,rownum as rn from (
+        select id_,name_,password_,photo_,degree_,master_,phone_,idcard_ from mall_user
+        <include refid="commonWhere"></include> order by id_
+        )t)t2
+        where t2.rn between #{start_index} and #{end_index}
+    </select>
+    <sql id="commonWhere">
+        <where>
+            <if test="@com.bypx.dao.QueryUtil@strIsNotEmpty(id)">
+                and id_=#{id}
+            </if>
+            <if test="@com.bypx.dao.QueryUtil@strIsNotEmpty(name)">
+                and name_=#{name}
+            </if>
+        </where>
+    </sql>
+    <resultMap id="userResultMap" type="UserPage">
+        <id column="id_" property="id"></id>
+        <result column="name_" property="name"></result>
+        <result column="password_" property="password"></result>
+        <result column="photo_" property="photo"></result>
+        <result column="degree_" property="degree"></result>
+        <result column="master_" property="master"></result>
+        <result column="phone_" property="phone"></result>
+        <result column="idcard_" property="idCard"></result>
+    </resultMap>
+    <!--//查询总记录数-->
+    <select id="total" parameterType="UserPage" resultType="Integer">
+        select count(*) from mall_user
+        <include refid="commonWhere"></include>
+    </select>
+    <!--//改变上下架转换开关，更新数据库信息-->
+    <update id="switch_change" parameterType="UserPage">
+        update mall_user set master_=#{master} where id_=#{id}
+    </update>
+    <!--//点击新增按钮-->
+    <!--//新增到用户表-->
+    <insert id="user_add" parameterType="UserPage">
+        insert into mall_user(id_,name_,password_,photo_,degree_,master_,phone_,idcard_)
+        values(#{id},#{name},#{password},#{photo},#{degree},#{master},#{phone},#{idCard})
+    </insert>
+    <!--//为了编辑获取数据-->
+    <!--//获取用户表数据-->
+    <select id="getdata1" parameterType="UserPage" resultMap="userResultMap1">
+        select id_,name_,password_,photo_,degree_,master_,phone_,idcard_ from mall_user where id_=#{id}
+    </select>
+    <resultMap id="userResultMap1" type="UserPage">
+        <id column="id_" property="id"></id>
+        <result column="name_" property="name"></result>
+        <result column="password_" property="password"></result>
+        <result column="photo_" property="photo"></result>
+        <result column="degree_" property="degree"></result>
+        <result column="master_" property="master"></result>
+        <result column="phone_" property="phone"></result>
+        <result column="idcard_" property="idCard"></result>
+    </resultMap>
+    <!--//勾选数据，点击编辑按钮 ，弹出框中初始化对应信息，可以任意修改用户数据-->
+    <!--//勾选多条时，提示“只能编辑一条数据”-->
+    <!--//编辑-->
+    <!--//在用户表更新用户-->
+    <update id="edit" parameterType="UserPage">
+        update mall_user set name_=#{name},password_=#{password},photo_=#{photo},
+        degree_=#{degree},master_=#{master},phone_=#{phone},idcard_=#{idCard} where id_=#{id}
+    </update>
+    <!--//删除勾选的数据-->
+    <delete id="user_del" parameterType="String">
+        delete from mall_user where id_=#{id}
+    </delete>
+    <!--//重置密码-->
+    <update id="resetPass" parameterType="UserPage">
+        update mall_user set password_=#{password} where id_=#{id}
+    </update>
+</mapper>

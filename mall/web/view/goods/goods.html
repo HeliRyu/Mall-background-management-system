@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+	<TITLE>商品管理</TITLE>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<link rel="stylesheet" href="../../static/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="../../static/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../static/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../static/css/main.css">
+
+	<script type="text/javascript" src="../../static/jquery/jquery.3.3.1.min.js"></script>
+	<script type="text/javascript" src="../../static/ztree/js/jquery.ztree.all.min.js"></script>
+	<script src="../../static/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../../static/script/docs.min.js"></script>
+
+    <!-- include summernote css/js-->
+    <link href="../../static/summernote/summernote.css" rel="stylesheet">
+    <script src="../../static/summernote/summernote.js"></script>
+    <script src="../../static/summernote/summernote-zh-CN.js"></script>
+
+	<!--开关switch-->
+	<link href="../../static/switch/bootstrap-switch.min.css" rel="stylesheet">
+	<script src="../../static/switch/bootstrap-switch.min.js"></script>
+
+	<script type="text/javascript" src="goods.js" ></script>
+	<script type="text/javascript">
+        $(function () {
+            $(".list-group-item").click(function(){
+                // jquery对象的回调方法中的this关键字为DOM对象
+                // $(DOM) ==> JQuery
+                if ( $(this).find("ul") ) { // 3 li
+                    $(this).toggleClass("tree-closed");
+                    if ( $(this).hasClass("tree-closed") ) {
+                        $("ul", this).hide("fast");
+                    } else {
+                        $("ul", this).show("fast");
+                    }
+                }
+            });
+        });
+	</script>
+
+	<style>
+		tr{
+			text-align: center;
+		}
+		th{
+			text-align: center;
+		}
+		.tree li {
+			list-style-type: none;
+			cursor:pointer;
+		}
+		.tree-closed {
+			height : 40px;
+		}
+		.tree-expanded {
+			height : auto;
+		}
+		#goods_add_chooseImg{
+			z-index: 10000;
+		}
+
+	</style>
+</HEAD>
+
+<BODY>
+<!--顶部条-->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<div><a class="navbar-brand" style="font-size:32px;" href="javascript:void(0)">商城后台管理系统</a></div>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li style="padding-top:8px;">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
+							<i class="glyphicon glyphicon-user"></i> 张三 <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="javascript:void(0)"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
+							<li><a href="javascript:void(0)"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
+							<li class="divider"></li>
+							<li><a href="../login/index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
+						</ul>
+					</div>
+				</li>
+				<li style="margin-left:10px;padding-top:8px;">
+					<button type="button" class="btn btn-default btn-danger">
+						<span class="glyphicon glyphicon-question-sign"></span> 帮助
+					</button>
+				</li>
+			</ul>
+			<form class="navbar-form navbar-right">
+				<input type="text" class="form-control" placeholder="查询">
+			</form>
+		</div>
+	</div>
+</nav>
+<!--end顶部条-->
+
+<!--主体部分-->
+<div class="container">
+	<div class="row">
+
+		<!--左边部分-->
+		<div class="col-sm-3 col-md-2 sidebar">
+			<div class="tree">
+				<ul style="padding-left:0px;" class="list-group">
+					<li class="list-group-item tree-closed" >
+						<a href="../login/main.html"><i class="glyphicon glyphicon-dashboard"></i> 控制面板</a>
+					</li>
+					<li class="list-group-item tree-closed">
+						<span><i class="glyphicon glyphicon-th-large"></i> 系统管理 <span class="badge" style="float:right">4</span></span>
+						<ul style="margin-top:10px;display:none;">
+							<li style="height:30px;">
+								<a href="../images/images.html"><i class="glyphicon glyphicon-picture"></i> 图库管理</a>
+							</li>
+							<li style="height:30px;">
+								<a href="../goodsClassify/goodsClassify.html"><i class="glyphicon glyphicon-equalizer"></i> 分类管理</a>
+							</li>
+							<li style="height:30px;">
+								<a href="goods.html"><i class="glyphicon glyphicon-random"></i> 商品管理</a>
+							</li>
+							<li style="height:30px;">
+								<a href="../user/user.html"><i class="glyphicon glyphicon-hdd"></i> 用户管理</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--end左边部分-->
+
+<!--右边部分-->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	<div class="row">
+		<!--面板-->
+		<div class="col-md-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">商品管理</h3>
+				</div>
+				<div class="panel-body">
+					<!--按钮-->
+					<a class="btn btn-success" href="javascript:void(0)" role="button" onclick="openAdd()"><span class="glyphicon glyphicon-plus"></span> 新增</a>
+					<a class="btn btn-danger" href="javascript:void(0)" role="button" onclick="goods_delete()" id="goods_delete_button"><span class="glyphicon glyphicon-trash"></span> 删除</a>
+					<!--end按钮-->
+				</div>
+			</div>
+		</div>
+		<!--end面板-->
+		<!--表格-->
+		<div class="col-md-12">
+			<table class="table table-striped table-bordered">
+				<thead>
+				<tr>
+					<th>&nbsp;&nbsp;</th>
+					<th><input type="checkbox"></th>
+					<th>商品ID</th>
+					<th>商品名</th>
+					<th>价格</th>
+					<th>库存</th>
+					<th>快递费</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody id="list">
+				</tbody>
+			</table>
+		</div>
+		<!--end表格-->
+		<!--分页-->
+		<div class="col-md-6 col-md-offset-4">
+			<nav aria-label="Page navigation">
+				<ul class="pagination" id="page">
+				</ul>
+			</nav>
+		</div>
+		<!--end分页-->
+	</div>
+</div>
+
+<!--新增	-->
+        <div class="modal fade" id="goods_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="overflow: auto">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="goods_addLabel">新增商品信息</h4>
+					</div>
+					<div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="goods_add_name" class="col-sm-2 control-label">标题</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_name" placeholder="请输入商品标题">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_img" class="col-sm-2 control-label">图片</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_img" placeholder="请选择图片">
+                                </div>
+								<a class="btn btn-success" href="javascript:void(0)" role="button" onclick="chooseImg()" id="chooseImg"><span class="glyphicon glyphicon-plus"></span> 选择图片</a>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_classify" class="col-sm-2 control-label">商品类型</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_classify" placeholder="请输入商品类型">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_price" class="col-sm-2 control-label">价格</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_price" placeholder="请输入商品价格">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_total" class="col-sm-2 control-label">库存</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_total" placeholder="请输入商品库存">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_sort" class="col-sm-2 control-label">序号</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_sort" placeholder="请输入商品序号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_freight" class="col-sm-2 control-label">快递费</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="goods_add_freight" placeholder="请输入快递费">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="goods_add_status" class="col-sm-2 control-label">是否上架</label>
+                                <div class="radio" id="goods_add_status">
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsYes" value="是" checked>
+                                        是
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="optionsRadios" id="optionsNo" value="否">
+                                        否
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="summernote">请输入详情</div>
+                        </form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="goods_addss()" id="goods_adds">保存</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+<!--end新增-->
+
+        <!-- 选择图片 -->
+        <div class="modal fade" id="goods_add_chooseImg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="goods_add_chooseImgLabel">选择图片</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <!--表格-->
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered">
+                                    <tbody id="imgList">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--end表格-->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="goods_chooseImg()" id="goods_chooseImg">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end选择图片 -->
+
+		<!--编辑	-->
+		<div class="modal fade" id="goods_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="overflow: auto" >
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="goods_editLabel">编辑商品信息</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<input id="mall_goods_editId" type="hidden">
+							<div class="form-group">
+								<label for="goods_edit_name" class="col-sm-2 control-label">标题</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_name" placeholder="请输入商品标题">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_img" class="col-sm-2 control-label">图片</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_img" placeholder="请选择图片">
+								</div>
+								<a class="btn btn-success" href="javascript:void(0)" role="button" onclick="chooseImg()" id="edit_chooseImg"><span class="glyphicon glyphicon-plus"></span> 选择图片</a>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_classify" class="col-sm-2 control-label">商品类型</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_classify" placeholder="请输入商品类型">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_price" class="col-sm-2 control-label">价格</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_price" placeholder="请输入商品价格">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_total" class="col-sm-2 control-label">库存</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_total" placeholder="请输入商品库存">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_sort" class="col-sm-2 control-label">序号</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_sort" placeholder="请输入商品序号">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_freight" class="col-sm-2 control-label">快递费</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="goods_edit_freight" placeholder="请输入快递费">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="goods_edit_status" class="col-sm-2 control-label">是否上架</label>
+								<div class="radio" id="goods_edit_status">
+									<label>
+										<input type="radio" name="edit_optionsRadios" id="edit_optionsYes" value="是" checked>
+										是
+									</label>
+									<label>
+										<input type="radio" name="edit_optionsRadios" id="edit_optionsNo" value="否">
+										否
+									</label>
+								</div>
+							</div>
+							<div id="edit_summernote">请输入详情</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="goods_editss()" id="goods_edits">保存</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--end编辑-->
+<!--end右边部分-->
+	</div>
+</div>
+<!--主体部分-->
+
+</BODY>
+</HTML>
